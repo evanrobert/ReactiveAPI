@@ -4,13 +4,24 @@ import com.example.ReactiveApiClient.Model.Photo;
 import com.example.ReactiveApiClient.Model.UnsplashResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
+
+@Service
 public class UnsplashService {
     @Autowired
     WebClient webClient;
+    @PostConstruct
+    public void getTest(){
+        UnsplashResponse unsplashResponse = webClient.get().uri(uri ->
+                uri.queryParam("query","washington").build()).retrieve().bodyToMono(UnsplashResponse.class).block();
+        System.out.println("test");
+
+    }
 
     public Flux<Photo> getPhotos(String searchText) {
         return getTotalPages(searchText)
